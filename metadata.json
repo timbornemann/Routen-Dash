@@ -1,0 +1,6 @@
+{
+  "name": "Rad-Roulette",
+  "description": "Eine mobile Web-App, die dir hilft, per Zufall deine nächste Fahrradroute auszuwählen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

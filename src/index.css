@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #0A0A0A;
+  --color-brand-surface: #141414;
+  --color-brand-light: #1F1F1F;
+  --color-brand-accent: #D4FF00;
+  --color-brand-text: #FFFFFF;
+  --color-brand-dim: #A0A0A0;
+  --color-brand-border: rgba(255, 255, 255, 0.1);
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-text);
+  font-family: var(--font-sans);
+}
