@@ -66,11 +66,21 @@ jobs:
       - name: Sync web build to Android
         run: npx cap sync android
 
+      - name: Create Gradle dependency fix for Kotlin stdlib duplicates
+        run: |
+          cat <<'EOF' > android/kotlin-stdlib-fix.gradle
+          allprojects {
+            configurations.configureEach {
+              exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
+              exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+            }
+          }
+          EOF
+
       - name: Build APKs
         run: |
           cd android
-          ./gradlew assembleDebug
-          ./gradlew assembleRelease
+          ./gradlew -I kotlin-stdlib-fix.gradle assembleDebug assembleRelease
 
       - name: Prepare APK filenames
         id: apk
