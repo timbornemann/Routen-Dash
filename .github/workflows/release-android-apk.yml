@@ -1,0 +1,95 @@
+name: Build Android APK On Release
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Install Capacitor tooling
+        run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets
+
+      - name: Initialize Capacitor project
+        run: |
+          if [ ! -f capacitor.config.ts ] && [ ! -f capacitor.config.json ]; then
+            npx cap init "Routen Dash" "com.routen.dash" --web-dir=dist
+          fi
+
+      - name: Create Android project
+        run: |
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
+
+      - name: Generate Android app icon from logo
+        run: |
+          if [ ! -f Routen-Dash-logo.png ]; then
+            echo "Routen-Dash-logo.png was not found in repository root."
+            exit 1
+          fi
+
+          mkdir -p assets
+          cp Routen-Dash-logo.png assets/logo.png
+          npx @capacitor/assets generate --android --assetPath assets --iconBackgroundColor '#ffffff'
+
+      - name: Sync web build to Android
+        run: npx cap sync android
+
+      - name: Build APKs
+        run: |
+          cd android
+          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+
+      - name: Prepare APK filenames
+        id: apk
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          DEBUG_APK_NAME="routen-dash-${TAG_NAME:-manual}-android-debug.apk"
+          RELEASE_APK_NAME="routen-dash-${TAG_NAME:-manual}-android-release-unsigned.apk"
+
+          cp android/app/build/outputs/apk/debug/app-debug.apk "$DEBUG_APK_NAME"
+          cp android/app/build/outputs/apk/release/app-release-unsigned.apk "$RELEASE_APK_NAME"
+
+          echo "debug_path=$DEBUG_APK_NAME" >> "$GITHUB_OUTPUT"
+          echo "release_path=$RELEASE_APK_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.apk.outputs.debug_path }}
+            ${{ steps.apk.outputs.release_path }}
