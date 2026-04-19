@@ -14,7 +14,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'roulette' | 'settings'>('roulette');
 
   return (
-    <div className="min-h-screen bg-brand-bg font-sans text-brand-text flex flex-col">
+    <div className="h-[100dvh] bg-brand-bg font-sans text-brand-text flex flex-col overflow-hidden">
       <main className="flex-1 overflow-hidden flex flex-col relative w-full h-full max-w-md mx-auto shadow-2xl bg-brand-surface border-x border-brand-border">
         
         {/* Top Header */}
