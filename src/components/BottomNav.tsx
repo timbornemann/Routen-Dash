@@ -8,7 +8,10 @@ interface BottomNavProps {
 
 export function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-brand-surface border-t border-brand-border z-10">
+    <div
+      className="shrink-0 bg-brand-surface border-t border-brand-border z-10"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
       <div className="flex justify-around items-center h-16">
         <button
           onClick={() => setActiveTab('roulette')}
