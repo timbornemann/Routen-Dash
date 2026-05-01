@@ -10,7 +10,7 @@ import { RoutesView } from './views/RoutesView';
 import { BottomNav } from './components/BottomNav';
 
 export default function App() {
-  const { routes, addRoute, deleteRoute, updateRoute } = useRoutes();
+  const { routes, addRoute, deleteRoute, updateRoute, importRoutes } = useRoutes();
   const [activeTab, setActiveTab] = useState<'roulette' | 'settings'>('roulette');
 
   return (
@@ -35,6 +35,7 @@ export default function App() {
               addRoute={addRoute} 
               deleteRoute={deleteRoute} 
               updateRoute={updateRoute}
+              importRoutes={importRoutes}
             />
           )}
         </div>

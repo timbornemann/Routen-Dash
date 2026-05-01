@@ -1,7 +1,8 @@
 export interface BikeRoute {
   id: string;
   name: string;
-  distance: number | ''; // in km
+  distance: number; // in km
+  duration: number; // in minutes
   type: RouteType;
   difficulty: Difficulty;
 }
